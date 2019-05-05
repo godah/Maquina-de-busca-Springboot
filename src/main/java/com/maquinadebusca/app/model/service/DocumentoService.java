@@ -60,4 +60,12 @@ public class DocumentoService {
 	public List<Documento> encontrarDocumento(String url) {
 		return dr.findByUrlIgnoreCaseContaining(url);
 	}
+
+	public Documento findByUrl(String urlDocumento) {
+		return dr.findByUrl(urlDocumento);
+	}
+
+	public Documento save(Documento documento) {
+		return dr.save(documento);
+	}
 }

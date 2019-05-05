@@ -12,22 +12,18 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.maquinadebusca.app.model.Documento;
 import com.maquinadebusca.app.model.Link;
-import com.maquinadebusca.app.model.repository.DocumentoRepository;
-import com.maquinadebusca.app.model.repository.LinkRepository;
 
 @Service
 public class ColetorService {
 
 	@Autowired
-	private DocumentoRepository dr;
+	private DocumentoService ds;
 
 	@Autowired
-	private LinkRepository lr;
+	private LinkService ls;
 
 	@Autowired
 	private HostService hostService;
@@ -54,7 +50,6 @@ public class ColetorService {
 				utilsService.verificaColetaConsecultiva(urlStringAnterior, url);
 				if (robotsService.verificaPermissaoRobots(url)) {
 					documentos.add(this.coletar(sementes.get(0)));
-					// urlStringAnterior = sementes.remove(0);
 				} else {
 					sementes.remove(0);
 				}
@@ -84,16 +79,14 @@ public class ColetorService {
 			trataLinksColetados(urlDocumento, documento, urls);
 			documento.setLinks(utilsService.removeElementosRepetidos(documento.getLinks()));
 			
-			//urlStringAnterior = sementes.remove(0);
-			documento = dr.save(documento);
+			documento = ds.save(documento);
 			
 		} catch (Exception e) {
 			System.out.println("\n\n\n Erro ao coletar a página! \n\n\n");
-			//urlStringAnterior = sementes.remove(0);
 			e.printStackTrace();
 		} finally {
 			urlStringAnterior = sementes.remove(0);
-			sementes.addAll(lr.obterUrlsNaoColetadas());
+			sementes.addAll(ls.obterUrlsNaoColetadas());
 			sementes = utilsService.removeElementosRepetidos(sementes);
 		}
 		return documento;
@@ -102,7 +95,7 @@ public class ColetorService {
 	private Documento loadOrNewDoc(String urlDocumento) {
 		Documento documento;
 		Link link;
-		Documento docOld = dr.findByUrl(urlDocumento);
+		Documento docOld = ds.findByUrl(urlDocumento);
 		if(docOld != null && docOld.getId() != null) {
 			documento = docOld;
 		}else {
@@ -117,7 +110,7 @@ public class ColetorService {
 
 	private Link loadOrNewLink(String urlDocumento, Documento documento) {
 		Link link;
-		link = lr.findByUrl(urlDocumento);
+		link = ls.findByUrl(urlDocumento);
 		if (link == null) {
 			link = new Link();
 			link.setUrl(urlDocumento);
@@ -140,7 +133,7 @@ public class ColetorService {
 				continue;
 			i++;
 			if ((!url.equals("")) && (url != null)) {
-				link = lr.findByUrl(url);
+				link = ls.findByUrl(url);
 				if (link == null) {
 					link = new Link();
 					link.setUrl(url);

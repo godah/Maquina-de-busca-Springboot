@@ -1,5 +1,8 @@
 package com.maquinadebusca.app.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.maquinadebusca.app.mensagem.Mensagem;
 import com.maquinadebusca.app.model.Link;
 import com.maquinadebusca.app.model.service.LinkService;
@@ -43,6 +48,7 @@ public class LinkController {
 
 	// Request for: http://localhost:8080/link
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	public ResponseEntity inserirLink(@RequestBody @Valid Link link, BindingResult resultado) {
 		ResponseEntity resposta = null;
 		if (resultado.hasErrors()) {
@@ -64,6 +70,7 @@ public class LinkController {
 
 	// Request for: http://localhost:8080/link
 	@PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	public ResponseEntity atualizarLink(@RequestBody @Valid Link link, BindingResult resultado) {
 		ResponseEntity resposta = null;
 		if (resultado.hasErrors()) {
@@ -77,6 +84,29 @@ public class LinkController {
 			} else {
 				resposta = new ResponseEntity(
 						new Mensagem("erro", "não foi possível atualizar o link informado no banco de dados"),
+						HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		return resposta;
+	}
+
+	// Request for: http://localhost:8080/link/atualizaUltimaColetaSementes
+	@PreAuthorize("hasRole('ADMIN')")
+	@PutMapping(value = "/atualizaUltimaColetaSementes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	public ResponseEntity atualizaUltimaColetaSementes(@RequestBody Link link) {
+		ResponseEntity resposta = null;
+		if (link == null || link.getUltimaColeta() == null) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			List<Link> sementes = ls.atualizaUltimaColetaSementes(link.getUltimaColeta());
+			if ((sementes != null) && (!sementes.isEmpty())) {
+				resposta = new ResponseEntity(sementes, HttpStatus.OK);
+			} else {
+				resposta = new ResponseEntity(
+						new Mensagem("erro", "não foi possível atualizar as sementes no banco de dados"),
 						HttpStatus.NOT_ACCEPTABLE);
 			}
 		}
@@ -137,6 +167,12 @@ public class LinkController {
 	@GetMapping(value = "/ordemAlfabetica", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarEmOrdemAlfabetica() {
 		return new ResponseEntity(ls.listarEmOrdemAlfabetica(), HttpStatus.OK);
+	}
+
+	// URL: http://localhost:8080/link/sementes
+	@GetMapping(value = "/sementes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity listarSementes() {
+		return new ResponseEntity(ls.obterLinksNaoColetados(), HttpStatus.OK);
 	}
 
 }

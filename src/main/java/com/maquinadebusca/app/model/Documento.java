@@ -1,22 +1,25 @@
 package com.maquinadebusca.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @JsonIdentityInfo (
@@ -43,6 +46,7 @@ public class Documento implements Serializable {
   @NotBlank
   private String visao;
 
+  @JsonIgnore
   @ManyToMany (
           cascade = CascadeType.ALL,
           fetch = FetchType.LAZY
@@ -54,14 +58,14 @@ public class Documento implements Serializable {
   private Set<Link> links;
 
   public Documento () {
-    links = new HashSet ();
+    links = new HashSet<>();
   }
 
   public Documento (String url, String texto, String visao) {
     this.url = url;
     this.texto = texto;
     this.visao = visao;
-    this.links = new HashSet ();
+    this.links = new HashSet<>();
   }
 
   public Long getId () {

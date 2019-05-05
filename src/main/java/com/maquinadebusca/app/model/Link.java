@@ -14,13 +14,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -38,12 +40,14 @@ public class Link implements Serializable {
 	private String url;
 
 	@Basic
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime ultimaColeta;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "host_id")
 	private Host host;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "links", // Nome do atributo na classe Documento.
 			fetch = FetchType.LAZY)
 	private Set<Documento> documentos;

@@ -1,5 +1,6 @@
 package com.maquinadebusca.app.model.service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,5 +94,23 @@ public class LinkService {
 
 	public List<Link> listarEmOrdemAlfabetica() {
 		return lr.getInLexicalOrder();
+	}
+	
+	public List<String> obterUrlsNaoColetadas(){
+		return lr.obterUrlsNaoColetadas();
+	}
+	
+	public List<Link> obterLinksNaoColetados(){
+		return lr.obterLinksNaoColetados();
+	}
+
+	public Link findByUrl(String url) {
+		return lr.findByUrl(url);
+	}
+
+	
+	public List<Link> atualizaUltimaColetaSementes(LocalDateTime data) {
+		lr.atualizaUltimaColetaSementes(data);
+		return lr.findByUltimaColeta(data);
 	}
 }
