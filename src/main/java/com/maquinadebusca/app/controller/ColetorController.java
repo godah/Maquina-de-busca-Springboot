@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.maquinadebusca.app.model.Link;
 import com.maquinadebusca.app.model.service.ColetorService;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })

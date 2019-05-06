@@ -1,6 +1,5 @@
 package com.maquinadebusca.app.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
