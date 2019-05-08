@@ -96,8 +96,7 @@ public class LinkController {
 	public ResponseEntity atualizaUltimaColetaSementes(@RequestBody Link link) {
 		ResponseEntity resposta = null;
 		if (link == null || link.getUltimaColeta() == null) {
-			resposta = new ResponseEntity(
-					new Mensagem("erro", "os dados não foram informados corretamente"),
+			resposta = new ResponseEntity(new Mensagem("erro", "os dados não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
 		} else {
 			List<Link> sementes = ls.atualizaUltimaColetaSementes(link.getUltimaColeta());
@@ -174,4 +173,15 @@ public class LinkController {
 		return new ResponseEntity(ls.obterLinksNaoColetados(), HttpStatus.OK);
 	}
 
+	// Request for: http://localhost:8080/link/pagina
+	@GetMapping(value = "/pagina", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity listarPagina() {
+		return new ResponseEntity(ls.buscarPagina(), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/pagina/{pageFlag}
+	@GetMapping(value = "/pagina/{pageFlag}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity listarPagina(@PathVariable(value = "pageFlag") Integer pageFlag) {
+		return new ResponseEntity(ls.buscarPagina(pageFlag), HttpStatus.OK);
+	}
 }

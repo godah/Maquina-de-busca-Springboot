@@ -1,11 +1,17 @@
 package com.maquinadebusca.app.model.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import com.maquinadebusca.app.model.Link;
 import com.maquinadebusca.app.model.repository.LinkRepository;
@@ -95,12 +101,12 @@ public class LinkService {
 	public List<Link> listarEmOrdemAlfabetica() {
 		return lr.getInLexicalOrder();
 	}
-	
-	public List<String> obterUrlsNaoColetadas(){
+
+	public List<String> obterUrlsNaoColetadas() {
 		return lr.obterUrlsNaoColetadas();
 	}
-	
-	public List<Link> obterLinksNaoColetados(){
+
+	public List<Link> obterLinksNaoColetados() {
 		return lr.obterLinksNaoColetados();
 	}
 
@@ -108,9 +114,55 @@ public class LinkService {
 		return lr.findByUrl(url);
 	}
 
-	
 	public List<Link> atualizaUltimaColetaSementes(LocalDateTime data) {
 		lr.atualizaUltimaColetaSementes(data);
 		return lr.findByUltimaColeta(data);
+	}
+
+	public List<Link> buscarPagina() {
+		List<Link> retorno = new ArrayList<>();
+		Slice<Link> pagina = null;
+		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "url"));
+
+		while (true) {
+			pagina = lr.getPage(pageable);
+			int numeroDaPagina = pagina.getNumber();
+			int numeroDeElementosNaPagina = pagina.getNumberOfElements();
+			int tamanhoDaPagina = pagina.getSize();
+			System.out.println("\n\nPágina: " + numeroDaPagina + "   Número de Elementos: " + numeroDeElementosNaPagina
+					+ "   Tamaho da Página: " + tamanhoDaPagina);
+			List<Link> links = pagina.getContent();
+			retorno.addAll(links);
+			links.forEach(System.out::println);
+			if (!pagina.hasNext()) {
+				break;
+			}
+			pageable = pagina.nextPageable();
+		}
+		return retorno;
+	}
+
+	public List<Link> buscarPagina(Integer pageFlag) {
+		Slice<Link> pagina = null;
+		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "url"));
+		while (true) {
+			pagina = lr.getPage(pageable);
+			int numeroDaPagina = pagina.getNumber();
+			int numeroDeElementosNaPagina = pagina.getNumberOfElements();
+			int tamanhoDaPagina = pagina.getSize();
+			System.out.println("\n\nPágina: " + numeroDaPagina + "   Número de Elementos: " + numeroDeElementosNaPagina
+					+ "   Tamaho da Página: " + tamanhoDaPagina);
+			List<Link> links = pagina.getContent();
+			links.forEach(System.out::println);
+
+			if(numeroDaPagina == pageFlag) 
+				return links;
+			
+			if (!pagina.hasNext()) {
+				break;
+			}
+			pageable = pagina.nextPageable();
+		}
+		return null;
 	}
 }
