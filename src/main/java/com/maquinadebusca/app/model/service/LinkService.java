@@ -155,14 +155,22 @@ public class LinkService {
 			List<Link> links = pagina.getContent();
 			links.forEach(System.out::println);
 
-			if(numeroDaPagina == pageFlag) 
+			if (numeroDaPagina == pageFlag)
 				return links;
-			
+
 			if (!pagina.hasNext()) {
 				break;
 			}
 			pageable = pagina.nextPageable();
 		}
 		return null;
+	}
+
+	public Long contarLinkPorIntervaloDeIdentificacao(Long id1, Long id2) {
+		return lr.countLinkByIdRange(id1, id2);
+	}
+
+	public List<Link> pesquisarLinkPorIntervaloDeIdentificacao(Long id1, Long id2) {
+		return lr.findLinkByIdRange(id1, id2);
 	}
 }

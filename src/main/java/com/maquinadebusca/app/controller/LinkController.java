@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.maquinadebusca.app.mensagem.Mensagem;
 import com.maquinadebusca.app.model.Link;
+import com.maquinadebusca.app.model.UrlsSementes;
 import com.maquinadebusca.app.model.service.LinkService;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -183,5 +184,47 @@ public class LinkController {
 	@GetMapping(value = "/pagina/{pageFlag}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarPagina(@PathVariable(value = "pageFlag") Integer pageFlag) {
 		return new ResponseEntity(ls.buscarPagina(pageFlag), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/intervalo/{id1}/{id2}
+	@GetMapping(value = "/intervalo/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity encontrarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
+			@PathVariable(value = "id2") Long id2) {
+		return new ResponseEntity(ls.pesquisarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/intervalo/contar/{id1}/{id2}
+	@GetMapping(value = "/intervalo/contar/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity contarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
+			@PathVariable(value = "id2") Long id2) {
+		return new ResponseEntity(ls.contarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/coletor/urlsSementes
+	@PostMapping(value = "/urlsSementes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity inserirUrlsSementes(@RequestBody UrlsSementes urlsSementes) {
+		boolean erro = false;
+		ResponseEntity resposta = null;
+
+		for (String url : urlsSementes.getUrls()) {
+			Link link = new Link();
+			link.setUrl(url);
+			link = ls.salvarLink(link);
+			if ((link == null) || (link.getId() <= 0)) {
+				erro = true;
+				break;
+			}
+		}
+		if (erro == false) {
+			resposta = new ResponseEntity(
+					new Mensagem("sucesso", "as urls sementes informadas foram inseridas no banco de dados"),
+					HttpStatus.OK);
+		} else {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "não foi possível inserir as urls sementes informadas no banco de dados"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return resposta;
 	}
 }

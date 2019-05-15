@@ -41,9 +41,12 @@ public class ColetorService {
 		List<Documento> documentos = new LinkedList<>();
 
 		try {
+			sementes = ls.obterUrlsNaoColetadas();
+			/*
 			sementes.add("https://www.youtube.com/");
 			sementes.add("https://www.facebook.com/");
 			sementes.add("https://www.twitter.com/");
+			*/
 
 			while (!sementes.isEmpty()) {
 				URL url = new URL(sementes.get(0));
