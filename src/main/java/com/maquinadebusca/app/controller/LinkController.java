@@ -203,6 +203,7 @@ public class LinkController {
 	}
 
 	// Request for: http://localhost:8080/coletor/urlsSementes
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = "/urlsSementes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity inserirUrlsSementes(@RequestBody UrlsSementes urlsSementes) {
 		boolean erro = false;
@@ -239,16 +240,18 @@ public class LinkController {
 	// Request for: http://localhost:8080/link/intervalo/datas/{dt1}/{dt2}
 	@GetMapping(value = "/intervalo/datas/{dt1}/{dt2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarSementesPorIntervaloDeData(
-			@PathVariable(value = "dt1") @DateTimeFormat (iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt1, 
-			@PathVariable(value = "dt2") @DateTimeFormat (iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt2) {
+			@PathVariable(value = "dt1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt1,
+			@PathVariable(value = "dt2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt2) {
 		return new ResponseEntity(ls.encontrarSementesPorIntervaloDeData(dt1, dt2), HttpStatus.OK);
 	}
 
 	// Request for: http://localhost:8080/link/ultima/coleta/{host}/{data}
-	  @PutMapping (value = "/ultima/coleta/{host}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	  public ResponseEntity atualizarUltimaColeta (@PathVariable (value = "host") String host, @PathVariable (value = "data") @DateTimeFormat (iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
-	    int n = ls.atualizarDataUltimaColeta (host, data);
-	    ResponseEntity resposta = new ResponseEntity (new Mensagem ("sucesso", "número de registros atualizados: " + n), HttpStatus.OK);
-	    return resposta;
-	  }
+	@PreAuthorize("hasRole('ADMIN')")
+	@PutMapping(value = "/ultima/coleta/{host}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity atualizarUltimaColeta(@PathVariable(value = "host") String host, @PathVariable(value = "data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
+		int n = ls.atualizarDataUltimaColeta(host, data);
+		ResponseEntity resposta = new ResponseEntity(new Mensagem("sucesso", "número de registros atualizados: " + n),
+				HttpStatus.OK);
+		return resposta;
+	}
 }
