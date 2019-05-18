@@ -1,7 +1,10 @@
 package com.maquinadebusca.app.model.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -174,5 +177,21 @@ public class LinkService {
 
 	public List<Link> pesquisarLinkPorIntervaloDeIdentificacao(Long id1, Long id2) {
 		return lr.findLinkByIdRange(id1, id2);
+	}
+
+	public List<Link> encontrarSementePorHost(String host) {
+		return lr.encontrarSementePorHost(host);
+	}
+
+	public List<Link> contarLinkPorIntervaloDeData(String dt1, String dt2) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		try {
+			Date d1 = formatter.parse(dt1);
+			Date d2 = formatter.parse(dt2);
+			return lr.contarLinkPorIntervaloDeData(d1, d2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -227,4 +227,17 @@ public class LinkController {
 
 		return resposta;
 	}
+
+	// Request for: http://localhost:8080/link/encontrarSemente/{host}
+	@GetMapping(value = "/encontrarSemente/{host}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity encontrarSementePorHost(@PathVariable(value = "host") String host) {
+		return new ResponseEntity(ls.encontrarSementePorHost(host), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/intervalo/datas/{dt1}/{dt2}
+	@GetMapping(value = "/intervalo/datas/{dt1}/{dt2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity contarLinkPorIntervaloDeId(@PathVariable(value = "dt1") String dt1, @PathVariable(value = "dt2") String dt2) {
+		return new ResponseEntity(ls.contarLinkPorIntervaloDeData(dt1, dt2), HttpStatus.OK);
+	}
+
 }

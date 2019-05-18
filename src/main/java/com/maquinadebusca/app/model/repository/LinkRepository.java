@@ -1,6 +1,7 @@
 package com.maquinadebusca.app.model.repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -51,4 +52,14 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
 	@Query(value = "SELECT COUNT(*) FROM Link WHERE id between :identificador1 and  :identificador2", nativeQuery = true)
 	Long countLinkByIdRange(@Param("identificador1") Long id1, @Param("identificador2") Long id2);
+
+	@Query(value = " SELECT l.* FROM Link l "
+			+ " JOIN Host h ON l.host_id = h.id "
+			+ " WHERE h.url like %:url% "
+			+ " AND l.ultimaColeta IS NULL ", nativeQuery = true)
+	List<Link> encontrarSementePorHost(@Param("url")String host);
+
+	@Query(value = " SELECT * FROM Link "
+			+ " WHERE ultimaColeta BETWEEN ?1 AND ?2 ", nativeQuery = true)
+	List<Link> contarLinkPorIntervaloDeData(Date d1, Date d2);
 }
