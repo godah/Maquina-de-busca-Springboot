@@ -3,6 +3,7 @@ package com.maquinadebusca.app.model.service;
 import com.maquinadebusca.app.model.Documento;
 import com.maquinadebusca.app.model.TermoDocumento;
 import com.maquinadebusca.app.model.repository.DocumentoRepository;
+import com.maquinadebusca.app.model.repository.IndiceInvertidoRepository;
 import com.maquinadebusca.app.model.repository.TermoRepository;
 import java.util.Hashtable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class IndexadorService {
 
 	@Autowired
 	TermoRepository tr;
+	
+	@Autowired
+	IndiceInvertidoRepository ir;
 
 	public IndexadorService() {
 		this.hashTermos = new Hashtable<>();
@@ -32,7 +36,7 @@ public class IndexadorService {
 		for (Documento documento : documentos) {
 			documento.setFrequenciaMaxima(0L);
 			documento.setSomaQuadradosPesos(0L);
-			documento = dr.save(documento);
+			documento = dr.save(documento);//observar se esta gravando
 			this.indexar(documento);
 		}
 
@@ -51,9 +55,15 @@ public class IndexadorService {
 				if (f > documento.getFrequenciaMaxima()) {
 					documento.setFrequenciaMaxima(f);
 				}
-				termoDocumento.inserirEntradaIndiceInvertido(documento, f);
+				termoDocumento.inserirEntradaIndiceInvertido(documento, f, calculaFrequeciaNormalizada(f, documento.getFrequenciaMaxima()));
 			}
 		}
+	}
+
+	private double calculaFrequeciaNormalizada(int frequencia, double frequenciaMaxima) {
+		if(frequencia == 0 || frequenciaMaxima == 0)
+			return 0;
+		return (frequencia/frequenciaMaxima);
 	}
 
 	public TermoDocumento getTermo(String texto) {
@@ -64,12 +74,22 @@ public class IndexadorService {
 		} else {
 			termo = new TermoDocumento();
 			termo.setTexto(texto);
-			termo.setN(0L);
+			termo.setN(quantDocPorTermo(texto));
 			termo = tr.save(termo);
 			this.hashTermos.put(texto, termo);
 		}
 
 		return termo;
+	}
+
+	private Long quantDocPorTermo(String texto) {
+		List<Documento> documentos = getDocumentos();
+		Long n = 0L;
+		for (Documento documento : documentos) {
+			if(documento.getVisao().contains(texto.toLowerCase()))
+				n++;
+		}
+		return n;
 	}
 
 	public int frequencia(String termo, String[] termos) {

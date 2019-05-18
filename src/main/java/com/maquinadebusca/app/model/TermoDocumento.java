@@ -78,8 +78,8 @@ public class TermoDocumento implements Serializable {
     this.indiceInvertido = indiceInvertido;
   }
 
-  public void inserirEntradaIndiceInvertido(Documento documento, int frequencia) {
-    IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
+  public void inserirEntradaIndiceInvertido(Documento documento, int frequencia, double frequenciaNormalizada) {
+    IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia, frequenciaNormalizada); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
     this.indiceInvertido.add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do termo corrente.
     documento.getIndiceInvertido().add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do documento que foi informado como parâmetro.
   }
