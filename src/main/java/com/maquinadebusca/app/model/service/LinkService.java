@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import com.maquinadebusca.app.model.Link;
+import com.maquinadebusca.app.model.LinkPage;
 import com.maquinadebusca.app.model.repository.LinkRepository;
 
 @Service
@@ -119,10 +120,10 @@ public class LinkService {
 		return lr.findByUltimaColeta(data);
 	}
 
-	public List<Link> buscarPagina() {
-		List<Link> retorno = new ArrayList<>();
+	public List<LinkPage> buscarPagina() {
+		List<LinkPage> paginas = new ArrayList<>();
 		Slice<Link> pagina = null;
-		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "url"));
+		Pageable pageable = PageRequest.of(0, 15, Sort.by(Sort.Direction.DESC, "url"));
 
 		while (true) {
 			pagina = lr.getPage(pageable);
@@ -132,14 +133,15 @@ public class LinkService {
 			System.out.println("\n\nPágina: " + numeroDaPagina + "   Número de Elementos: " + numeroDeElementosNaPagina
 					+ "   Tamaho da Página: " + tamanhoDaPagina);
 			List<Link> links = pagina.getContent();
-			retorno.addAll(links);
+			LinkPage linkPage = new LinkPage(links);
+			paginas.add(linkPage);
 			links.forEach(System.out::println);
 			if (!pagina.hasNext()) {
 				break;
 			}
 			pageable = pagina.nextPageable();
 		}
-		return retorno;
+		return paginas;
 	}
 
 	public List<Link> buscarPagina(Integer pageFlag) {
