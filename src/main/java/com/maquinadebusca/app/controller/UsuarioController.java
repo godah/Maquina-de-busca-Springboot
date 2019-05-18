@@ -37,6 +37,7 @@ public class UsuarioController {
 		return new ResponseEntity(us.getAdmin(), HttpStatus.OK);
 	}
 
+	//TODO CONFERIR ACESSO DO ADMIN
 	// URL: http://localhost:8080/usuario
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

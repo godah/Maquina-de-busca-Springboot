@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
   @Query (value = "SELECT * FROM users ORDER BY username", nativeQuery = true)
   List<Users> getInLexicalOrder ();
+   
 }

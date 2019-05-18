@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// auth.inMemoryAuthentication().withUser("alexandre").password("123").roles("ADMIN");
 		auth.jdbcAuthentication().dataSource(dataSource);
 	}
 
@@ -36,7 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 		http.csrf().disable();
-
 	}
 
 	@Bean

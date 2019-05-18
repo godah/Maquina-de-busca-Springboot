@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.maquinadebusca.app.mensagem.Mensagem;
 import com.maquinadebusca.app.model.Link;
+import com.maquinadebusca.app.model.UrlsSementes;
 import com.maquinadebusca.app.model.service.LinkService;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -96,8 +97,7 @@ public class LinkController {
 	public ResponseEntity atualizaUltimaColetaSementes(@RequestBody Link link) {
 		ResponseEntity resposta = null;
 		if (link == null || link.getUltimaColeta() == null) {
-			resposta = new ResponseEntity(
-					new Mensagem("erro", "os dados não foram informados corretamente"),
+			resposta = new ResponseEntity(new Mensagem("erro", "os dados não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
 		} else {
 			List<Link> sementes = ls.atualizaUltimaColetaSementes(link.getUltimaColeta());
@@ -174,4 +174,57 @@ public class LinkController {
 		return new ResponseEntity(ls.obterLinksNaoColetados(), HttpStatus.OK);
 	}
 
+	// Request for: http://localhost:8080/link/pagina
+	@GetMapping(value = "/pagina", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity listarPagina() {
+		return new ResponseEntity(ls.buscarPagina(), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/pagina/{pageFlag}
+	@GetMapping(value = "/pagina/{pageFlag}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity listarPagina(@PathVariable(value = "pageFlag") Integer pageFlag) {
+		return new ResponseEntity(ls.buscarPagina(pageFlag), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/intervalo/{id1}/{id2}
+	@GetMapping(value = "/intervalo/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity encontrarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
+			@PathVariable(value = "id2") Long id2) {
+		return new ResponseEntity(ls.pesquisarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/link/intervalo/contar/{id1}/{id2}
+	@GetMapping(value = "/intervalo/contar/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity contarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
+			@PathVariable(value = "id2") Long id2) {
+		return new ResponseEntity(ls.contarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+	}
+
+	// Request for: http://localhost:8080/coletor/urlsSementes
+	@PostMapping(value = "/urlsSementes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity inserirUrlsSementes(@RequestBody UrlsSementes urlsSementes) {
+		boolean erro = false;
+		ResponseEntity resposta = null;
+
+		for (String url : urlsSementes.getUrls()) {
+			Link link = new Link();
+			link.setUrl(url);
+			link = ls.salvarLink(link);
+			if ((link == null) || (link.getId() <= 0)) {
+				erro = true;
+				break;
+			}
+		}
+		if (erro == false) {
+			resposta = new ResponseEntity(
+					new Mensagem("sucesso", "as urls sementes informadas foram inseridas no banco de dados"),
+					HttpStatus.OK);
+		} else {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "não foi possível inserir as urls sementes informadas no banco de dados"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return resposta;
+	}
 }
