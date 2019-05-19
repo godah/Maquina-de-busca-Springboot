@@ -18,34 +18,40 @@ public class IndexadorService {
 	private Hashtable hashTermos;
 
 	@Autowired
-	DocumentoRepository dr;
+	DocumentoService ds;
 
 	@Autowired
-	TermoRepository tr;
+	TermoService ts;
 	
 	@Autowired
-	IndiceInvertidoRepository ir;
+	IndiceInvertidoService is;
 
 	public IndexadorService() {
 		this.hashTermos = new Hashtable<>();
 	}
 
 	@Transactional
+	public boolean limpaCriaIndice() {
+		this.hashTermos = new Hashtable<>();
+		is.deleteAllNativeQuery();
+		ts.deleteAllNativeQuery();
+		return criarIndice();
+	}
+	
+	//@Transactional
 	public boolean criarIndice() {
-		List<Documento> documentos = this.getDocumentos();
+		this.hashTermos = new Hashtable<>();
+		List<Documento> documentos = ds.findAll();//this.getDocumentos();
 		for (Documento documento : documentos) {
 			documento.setFrequenciaMaxima(0L);
 			documento.setSomaQuadradosPesos(0L);
-			documento = dr.save(documento);//observar se esta gravando
-			this.indexar(documento);
+			documento = ds.save(documento); //Documentos ja salvos
+			this.indexar(documento, documentos.size());
 		}
-
 		return true;
 	}
 
-	public void indexar(Documento documento) {
-		int i;
-
+	public void indexar(Documento documento, int N) {
 		String visaoDocumento = documento.getVisao();
 		String[] termos = visaoDocumento.split(" ");
 		for (String termo : termos) {
@@ -55,11 +61,31 @@ public class IndexadorService {
 				if (f > documento.getFrequenciaMaxima()) {
 					documento.setFrequenciaMaxima(f);
 				}
-				termoDocumento.inserirEntradaIndiceInvertido(documento, f, calculaFrequeciaNormalizada(f, documento.getFrequenciaMaxima()));
+				double peso = calcularPeso(N, termoDocumento.getN(), f);
+				documento.adicionarPeso(peso);
+				termoDocumento.inserirEntradaIndiceInvertido(documento, f, calculaFrequeciaNormalizada(f, documento.getFrequenciaMaxima()), peso);
 			}
 		}
 	}
 
+	private double calcularPeso(int N, Long n, int frequencia) {
+		double tf = calcularTf(frequencia);
+		double idf = calculaIdf(N, n);
+		return tf * idf;
+	}
+
+	private double log(double x, int base){
+		return (Math.log(x) / Math.log(base));
+	}
+	
+	private double calcularTf(int frequencia) {
+		return 1 + log(frequencia, 2); 
+	}
+	
+	private double calculaIdf(Integer N, Long n) {
+		return log((N.doubleValue() / n.doubleValue()),2);
+	}
+	
 	private double calculaFrequeciaNormalizada(int frequencia, double frequenciaMaxima) {
 		if(frequencia == 0 || frequenciaMaxima == 0)
 			return 0;
@@ -75,7 +101,7 @@ public class IndexadorService {
 			termo = new TermoDocumento();
 			termo.setTexto(texto);
 			termo.setN(quantDocPorTermo(texto));
-			termo = tr.save(termo);
+			termo = ts.save(termo);
 			this.hashTermos.put(texto, termo);
 		}
 
@@ -137,4 +163,5 @@ public class IndexadorService {
 		return documentos;
 	}
 
+	
 }

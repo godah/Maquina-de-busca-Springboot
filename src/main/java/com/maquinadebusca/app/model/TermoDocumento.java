@@ -23,140 +23,140 @@ import javax.validation.constraints.NotBlank;
 )
 public class TermoDocumento implements Serializable {
 
-  static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue (strategy = GenerationType.AUTO)
-  private Long id;
+	private static final long serialVersionUID = -6026930898355882965L;
 
-  @NotBlank
-  private String texto;
+	@Id
+	@GeneratedValue (strategy = GenerationType.AUTO)
+	private Long id;
 
-  private Long n;
+	@NotBlank
+	private String texto;
 
-  @OneToMany (
-          mappedBy = "termo", // Nome do atributo na classe IndiceInvertido. 
-          cascade = CascadeType.ALL,
-          fetch = FetchType.LAZY,
-          orphanRemoval = true
-  )
-  private List<IndiceInvertido> indiceInvertido;
+	private Long n; //qtd doc com o termo
 
-  public TermoDocumento () {
-    indiceInvertido = new LinkedList<>();
-  }
+	@OneToMany(mappedBy = "termo", // Nome do atributo na classe IndiceInvertido.
+			cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<IndiceInvertido> indiceInvertido;
 
-  public Long getId () {
-    return id;
-  }
+	public TermoDocumento() {
+		indiceInvertido = new LinkedList<>();
+	}
 
-  public void setId (Long id) {
-    this.id = id;
-  }
+	public Long getId() {
+		return id;
+	}
 
-  public String getTexto () {
-    return texto;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public void setTexto (String texto) {
-    this.texto = texto;
-  }
+	public String getTexto() {
+		return texto;
+	}
 
-  public Long getN () {
-    return n;
-  }
+	public void setTexto(String texto) {
+		this.texto = texto;
+	}
 
-  public void setN (Long n) {
-    this.n = n;
-  }
+	public Long getN() {
+		return n;
+	}
 
-  public List<IndiceInvertido> getIndiceInvertido () {
-    return indiceInvertido;
-  }
+	public void setN(Long n) {
+		this.n = n;
+	}
 
-  public void setIndiceInvertido (List<IndiceInvertido> indiceInvertido) {
-    this.indiceInvertido = indiceInvertido;
-  }
+	public List<IndiceInvertido> getIndiceInvertido() {
+		return indiceInvertido;
+	}
 
-  public void inserirEntradaIndiceInvertido(Documento documento, int frequencia, double frequenciaNormalizada) {
-    IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia, frequenciaNormalizada); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
-    this.indiceInvertido.add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do termo corrente.
-    documento.getIndiceInvertido().add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do documento que foi informado como parâmetro.
-  }
+	public void setIndiceInvertido(List<IndiceInvertido> indiceInvertido) {
+		this.indiceInvertido = indiceInvertido;
+	}
 
-  public void removeDocumento(Documento documento) {
-    Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
-    while (iterator.hasNext()) {
-      IndiceInvertido entradaIndiceInvertido = iterator.next ();
-      if (entradaIndiceInvertido.getTermo().equals(this) && entradaIndiceInvertido.getDocumento().equals(documento)) {
-        iterator.remove(); // Remoção no Banco de Dados a partir da tabela TermoDocumento.
-        entradaIndiceInvertido.getDocumento().getIndiceInvertido().remove (entradaIndiceInvertido); // Remoção no Banco de Dados a partir da tabela Documento.
-        entradaIndiceInvertido.setDocumento(null); // Remoção na memória RAM.
-        entradaIndiceInvertido.setTermo(null); // Remoção na memória RAM.
-      }
-    }
-  }
+  	public void inserirEntradaIndiceInvertido(Documento documento, int frequencia, double frequenciaNormalizada, double peso) {
+		IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia, frequenciaNormalizada, peso); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
+		this.indiceInvertido.add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do termo corrente.
+		documento.getIndiceInvertido().add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do documento que foi informado como parâmetro.
+  	}
 
-  public void setFrequencia (int frequencia, Documento documento) {
-    Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator ();
-    while (iterator.hasNext ()) {
-      IndiceInvertido entradaIndiceInvertido = iterator.next ();
-      if (entradaIndiceInvertido.getTermo ().equals (this) && entradaIndiceInvertido.getDocumento ().equals (documento)) {
-        entradaIndiceInvertido.setFrequencia (frequencia);
-        break;
-      }
-    }
-  }
+  	public void removeDocumento(Documento documento) {
+	    Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
+	    while (iterator.hasNext()) {
+		  IndiceInvertido entradaIndiceInvertido = iterator.next();
+			  if (entradaIndiceInvertido.getTermo().equals(this) && entradaIndiceInvertido.getDocumento().equals(documento)) {
+				    iterator.remove(); // Remoção no Banco de Dados a partir da tabela TermoDocumento.
+					entradaIndiceInvertido.getDocumento().getIndiceInvertido().remove (entradaIndiceInvertido); // Remoção no Banco de Dados a partir da tabela Documento.
+					entradaIndiceInvertido.setDocumento(null); // Remoção na memória RAM.
+					entradaIndiceInvertido.setTermo(null); // Remoção na memória RAM.
+			  }
+	    }
+  	}
 
-  public void setFrequenciaNormalizada (Documento documento) {
-    Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator ();
-    while (iterator.hasNext ()) {
-      IndiceInvertido entradaIndiceInvertido = iterator.next ();
-      if (entradaIndiceInvertido.getTermo ().equals (this) && entradaIndiceInvertido.getDocumento ().equals (documento)) {
-        entradaIndiceInvertido.setFrequenciaNormalizada (entradaIndiceInvertido.getFrequencia () / documento.getFrequenciaMaxima ());
-        break;
-      }
-    }
-  }
+	public void setFrequencia(int frequencia, Documento documento) {
+		Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
+		while (iterator.hasNext()) {
+			IndiceInvertido entradaIndiceInvertido = iterator.next();
+			if (entradaIndiceInvertido.getTermo().equals(this)
+					&& entradaIndiceInvertido.getDocumento().equals(documento)) {
+				entradaIndiceInvertido.setFrequencia(frequencia);
+				break;
+			}
+		}
+	}
 
-  public void setPeso (double peso, Documento documento) {
-    Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator ();
-    while (iterator.hasNext ()) {
-      IndiceInvertido entradaIndiceInvertido = iterator.next ();
-      if (entradaIndiceInvertido.getTermo ().equals (this) && entradaIndiceInvertido.getDocumento ().equals (documento)) {
-        entradaIndiceInvertido.setPeso (peso);
-        break;
-      }
-    }
-  }
+	public void setFrequenciaNormalizada(Documento documento) {
+		Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
+		while (iterator.hasNext()) {
+			IndiceInvertido entradaIndiceInvertido = iterator.next();
+			if (entradaIndiceInvertido.getTermo().equals(this)
+					&& entradaIndiceInvertido.getDocumento().equals(documento)) {
+				entradaIndiceInvertido.setFrequenciaNormalizada(
+						entradaIndiceInvertido.getFrequencia() / documento.getFrequenciaMaxima());
+				break;
+			}
+		}
+	}
 
-  @Override
-  public int hashCode () {
-    int hash = 3;
-    hash = 23 * hash + Objects.hashCode (this.id);
-    hash = 23 * hash + Objects.hashCode (this.texto);
-    return hash;
-  }
+	public void setPeso(double peso, Documento documento) {
+		Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
+		while (iterator.hasNext()) {
+			IndiceInvertido entradaIndiceInvertido = iterator.next();
+			if (entradaIndiceInvertido.getTermo().equals(this)
+					&& entradaIndiceInvertido.getDocumento().equals(documento)) {
+				entradaIndiceInvertido.setPeso(peso);
+				break;
+			}
+		}
+	}
 
-  @Override
-  public boolean equals (Object obj
-  ) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass () != obj.getClass ()) {
-      return false;
-    }
-    final TermoDocumento other = (TermoDocumento) obj;
-    if (!Objects.equals (this.texto, other.texto)) {
-      return false;
-    }
-    if (!Objects.equals (this.id, other.id)) {
-      return false;
-    }
-    return true;
-  }
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 23 * hash + Objects.hashCode(this.id);
+		hash = 23 * hash + Objects.hashCode(this.texto);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final TermoDocumento other = (TermoDocumento) obj;
+		if (!Objects.equals(this.texto, other.texto)) {
+			return false;
+		}
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		return true;
+	}
 }

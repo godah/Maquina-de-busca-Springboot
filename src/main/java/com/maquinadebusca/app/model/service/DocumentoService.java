@@ -68,4 +68,8 @@ public class DocumentoService {
 	public Documento save(Documento documento) {
 		return dr.save(documento);
 	}
+	
+	public List<Documento> findAll(){
+		return dr.findAll();
+	}
 }

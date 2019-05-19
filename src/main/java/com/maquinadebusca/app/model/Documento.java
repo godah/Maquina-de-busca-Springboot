@@ -46,7 +46,9 @@ public class Documento implements Serializable {
 	private String visao;
 
 	@JsonIgnore
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(
+			cascade = CascadeType.ALL, 
+			fetch = FetchType.LAZY)
 	@JoinTable(name = "documento_link", joinColumns = @JoinColumn(name = "documento_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "link_id", referencedColumnName = "id"))
 	private Set<Link> links;
 
@@ -55,7 +57,9 @@ public class Documento implements Serializable {
 	private double somaQuadradosPesos;
 
 	@OneToMany(mappedBy = "documento", // Nome do atributo na classe IndiceInvertido.
-			cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+			cascade = CascadeType.ALL, 
+			fetch = FetchType.LAZY, 
+			orphanRemoval = true)
 	private List<IndiceInvertido> indiceInvertido;
 
 	public Documento() {
@@ -204,6 +208,10 @@ public class Documento implements Serializable {
 		} else if (!visao.equals(other.visao))
 			return false;
 		return true;
+	}
+
+	public void adicionarPeso(double peso) {
+		somaQuadradosPesos += Math.sqrt(peso);
 	}
 	
 }

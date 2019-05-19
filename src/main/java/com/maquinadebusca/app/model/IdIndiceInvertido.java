@@ -2,12 +2,14 @@ package com.maquinadebusca.app.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class IdIndiceInvertido implements Serializable {
 
 	private static final long serialVersionUID = 4778887795838393082L;
+	
 	private Long idTermo;
 	private Long idDocumento;
 

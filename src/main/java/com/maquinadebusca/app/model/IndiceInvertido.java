@@ -42,7 +42,8 @@ public class IndiceInvertido implements Serializable {
 		this.id = new IdIndiceInvertido(termo.getId(), documento.getId());
 	}
 
-	public IndiceInvertido(TermoDocumento termo, Documento documento, int frequencia, double frequenciaNormalizada) {
+	public IndiceInvertido(TermoDocumento termo, Documento documento, int frequencia, double frequenciaNormalizada, double peso) {
+		this.peso = peso;
 		this.frequenciaNormalizada = frequenciaNormalizada;
 		this.termo = termo;
 		this.documento = documento;

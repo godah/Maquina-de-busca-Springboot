@@ -21,7 +21,7 @@ public class IndexadorController {
   // URL: http://localhost:8080/indexador/indice
   @PostMapping (value = "/indice", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity criarIndice () {
-    boolean confirmacao = is.criarIndice ();
+    boolean confirmacao = is.limpaCriaIndice();
     ResponseEntity resp;
 
     if (confirmacao) {
