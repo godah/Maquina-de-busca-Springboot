@@ -1,16 +1,14 @@
 package com.maquinadebusca.app.model.service;
 
+import java.util.Hashtable;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.maquinadebusca.app.model.Documento;
 import com.maquinadebusca.app.model.TermoDocumento;
-import com.maquinadebusca.app.model.repository.DocumentoRepository;
-import com.maquinadebusca.app.model.repository.IndiceInvertidoRepository;
-import com.maquinadebusca.app.model.repository.TermoRepository;
-import java.util.Hashtable;
-import org.springframework.stereotype.Service;
-import java.util.LinkedList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class IndexadorService {
@@ -26,6 +24,8 @@ public class IndexadorService {
 	@Autowired
 	IndiceInvertidoService is;
 
+	List<Documento> documentos;
+	
 	public IndexadorService() {
 		this.hashTermos = new Hashtable<>();
 	}
@@ -38,14 +38,15 @@ public class IndexadorService {
 		return criarIndice();
 	}
 	
-	//@Transactional
 	public boolean criarIndice() {
 		this.hashTermos = new Hashtable<>();
-		List<Documento> documentos = ds.findAll();//this.getDocumentos();
+		documentos = ds.findAll();
+		//MockupTestes mock = new MockupTestes();
+		//documentos = mock.getDocumentosExercicio1();
 		for (Documento documento : documentos) {
 			documento.setFrequenciaMaxima(0L);
 			documento.setSomaQuadradosPesos(0L);
-			documento = ds.save(documento); //Documentos ja salvos
+			documento = ds.save(documento);
 			this.indexar(documento, documentos.size());
 		}
 		return true;
@@ -109,7 +110,6 @@ public class IndexadorService {
 	}
 
 	private Long quantDocPorTermo(String texto) {
-		List<Documento> documentos = getDocumentos();
 		Long n = 0L;
 		for (Documento documento : documentos) {
 			if(documento.getVisao().contains(texto.toLowerCase()))
@@ -134,34 +134,7 @@ public class IndexadorService {
 	}
 
 	public List<Documento> getDocumentos() {
-		Documento documento;
-		List<Documento> documentos = new LinkedList<>();
-
-		documento = new Documento();
-		documento.setUrl("www.1.com.br");
-		documento.setTexto("to do is to be to be is to do");
-		documento.setVisao("to do is to be to be is to do");
-		documentos.add(documento);
-
-		documento = new Documento();
-		documento.setUrl("www.2.com.br");
-		documento.setTexto("to be or not to be i am what i am");
-		documento.setVisao("to be or not to be i am what i am");
-		documentos.add(documento);
-
-		documento = new Documento();
-		documento.setUrl("www.3.com.br");
-		documento.setTexto("i think therefore i am do be do be do");
-		documento.setVisao("i think therefore i am do be do be do");
-		documentos.add(documento);
-		documento = new Documento();
-		documento.setUrl("www.4.com.br");
-		documento.setTexto("do do do da da da let it be let it be");
-		documento.setVisao("do do do da da da let it be let it be");
-		documentos.add(documento);
-
 		return documentos;
 	}
-
 	
 }

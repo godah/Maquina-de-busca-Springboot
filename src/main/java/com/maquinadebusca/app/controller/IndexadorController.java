@@ -35,7 +35,7 @@ public class IndexadorController {
   // URL: http://localhost:8080/indexador/documento
   @GetMapping (value = "/documento", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity getDocumento () {
-    return new ResponseEntity (is.getDocumentos (), HttpStatus.CREATED);
+    return new ResponseEntity (is.getDocumentos(), HttpStatus.CREATED);
   }
 
 }
