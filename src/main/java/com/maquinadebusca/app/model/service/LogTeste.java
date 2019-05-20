@@ -7,8 +7,8 @@ public class LogTeste {
 //			System.out.println(i+"). "+log(i,2));
 //		}
 		
-		System.out.println(4/3);
-		System.out.println(4/3L);
+		System.out.println(4/0);
+		System.out.println(0/3L);
 		System.out.println(((double)4)/((double)3));
 	}
 	static int log(int x, int base)

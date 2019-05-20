@@ -76,7 +76,11 @@ public class IndexadorService {
 	}
 
 	private double log(double x, int base){
-		return (Math.log(x) / Math.log(base));
+		double a = Math.log(x);
+		double b = Math.log(base);
+		if (a == 0 || b == 0)
+			return 0;
+		return (a / b);
 	}
 	
 	private double calcularTf(int frequencia) {
@@ -84,13 +88,15 @@ public class IndexadorService {
 	}
 	
 	private double calculaIdf(Integer N, Long n) {
+		if(N == 0 || n == 0L)
+			return 0;
 		return log((N.doubleValue() / n.doubleValue()),2);
 	}
 	
 	private double calculaFrequeciaNormalizada(int frequencia, double frequenciaMaxima) {
 		if(frequencia == 0 || frequenciaMaxima == 0)
 			return 0;
-		return (frequencia/frequenciaMaxima);
+		return (frequencia / frequenciaMaxima);
 	}
 
 	public TermoDocumento getTermo(String texto) {
