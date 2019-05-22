@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -114,7 +113,7 @@ public class UserService {
 		return user;
 	}
 
-	public Boolean loggedUserIsAdmin(SecurityContext securityContext) {
+	public Boolean loggedUserIsAdmin() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String role = userDetails.getAuthorities().iterator().next().toString();
@@ -126,6 +125,12 @@ public class UserService {
 		return userDb.getAuthorities().getAuthority().equals(RoleEnum.ADMIN.getLabel());
 	}
 
+	public Users encontrarUsuarioLogado() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		return ur.findByUsername(userDetails.getUsername());
+	}
+	
 	public List<Users> encontrarUsuario(String username) {
 		List<Users> usuarios = ur.findByUsernameIgnoreCaseContaining(username);
 		List<Users> retorno = new ArrayList<>();

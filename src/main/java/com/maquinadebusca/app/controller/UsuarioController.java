@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,15 +47,31 @@ public class UsuarioController {
 	// URL: http://localhost:8080/usuario/administrador/{id}
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value = "/administrador/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity listarAdmin(@PathVariable(value = "id") long id) {
-		return new ResponseEntity(us.getAdmin(id), HttpStatus.OK);
+	public ResponseEntity listarAdmin(@PathVariable(value = "id") Long id) {
+		ResponseEntity resposta = null;
+		if (id==null || ((id != null) && (id <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o usuario  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(us.getAdmin(id), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// URL: http://localhost:8080/usuario/{id}
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity listarUsuario(@PathVariable(value = "id") long id) {
-		return new ResponseEntity(us.getUser(id), HttpStatus.OK);
+	public ResponseEntity listarUsuario(@PathVariable(value = "id") Long id) {
+		ResponseEntity resposta = null;
+		if (id==null || ((id != null) && (id <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(us.getUser(id), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/usuario/administrador
@@ -70,7 +85,7 @@ public class UsuarioController {
 					HttpStatus.BAD_REQUEST);
 		} else {
 			users = us.salvarUser(users);
-			if ((users != null) && (users.getId() > 0)) {
+			if ((users != null) && (users.getId() > 0L)) {
 				resposta = new ResponseEntity(users, HttpStatus.OK);
 			} else {
 				resposta = new ResponseEntity(
@@ -92,7 +107,7 @@ public class UsuarioController {
 					HttpStatus.BAD_REQUEST);
 		} else {
 			users = us.salvarUser(users);
-			if ((users != null) && (users.getId() > 0)) {
+			if ((users != null) && (users.getId() > 0L)) {
 				resposta = new ResponseEntity(users, HttpStatus.OK);
 			} else {
 				resposta = new ResponseEntity(
@@ -108,7 +123,7 @@ public class UsuarioController {
 	public ResponseEntity removerUser(@RequestBody @Valid Users user, BindingResult resultado) {
 		ResponseEntity resposta = null;
 
-		if (!us.loggedUserIsAdmin(SecurityContextHolder.getContext()) && us.isAdmin(user.getId().intValue())) {
+		if (!us.loggedUserIsAdmin() && us.isAdmin(user.getId().intValue())) {
 			return new ResponseEntity(
 					new Mensagem("erro", "remoção não autorizada, verifique as permissões de acesso."),
 					HttpStatus.UNAUTHORIZED);
@@ -134,14 +149,15 @@ public class UsuarioController {
 	// Request for: http://localhost:8080/usuario/remove/{id}
 	@DeleteMapping(value = "/remove/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerUsuario(@PathVariable(value = "id") Long id) {
+		
 		ResponseEntity resposta = null;
-		if (!us.loggedUserIsAdmin(SecurityContextHolder.getContext()) && us.isAdmin(id.intValue())) {
+		if (!us.loggedUserIsAdmin() && us.isAdmin(id.intValue())) {
 			return new ResponseEntity(
 					new Mensagem("erro", "remoção não autorizada, verifique as permissões de acesso."),
 					HttpStatus.UNAUTHORIZED);
 		}
 
-		if ((id != null) && (id <= 0)) {
+		if (id == null || ((id != null) && (id <= 0L))) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o usuario  não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
@@ -161,17 +177,25 @@ public class UsuarioController {
 	// Request for: http://localhost:8080/usuario/encontrar/{username}
 	@GetMapping(value = "/encontrar/{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarDocumento(@PathVariable(value = "username") String username) {
-		if (!us.loggedUserIsAdmin(SecurityContextHolder.getContext())) {
-			return new ResponseEntity(us.encontrarUsuario(username), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (username == null || ((username != null) && (username.equals("")))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o host  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
 		} else {
-			return new ResponseEntity(us.encontrarTodos(username), HttpStatus.OK);
+			if (!us.loggedUserIsAdmin()) {
+				resposta =  new ResponseEntity(us.encontrarUsuario(username), HttpStatus.OK);
+			} else {
+				resposta = new ResponseEntity(us.encontrarTodos(username), HttpStatus.OK);
+			}
 		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/usuario/ordemAlfabetica
 	@GetMapping(value = "/ordemAlfabetica", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarEmOrdemAlfabetica() {
-		if (!us.loggedUserIsAdmin(SecurityContextHolder.getContext())) {
+		if (!us.loggedUserIsAdmin()) {
 			return new ResponseEntity(us.listarEmOrdemAlfabetica(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity(us.listarTodosEmOrdemAlfabetica(), HttpStatus.OK);

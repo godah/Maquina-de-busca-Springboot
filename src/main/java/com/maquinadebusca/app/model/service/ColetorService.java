@@ -65,7 +65,7 @@ public class ColetorService {
 		return documentos;
 	}
 
-	public Documento coletar(String urlDocumento) {
+	private Documento coletar(String urlDocumento) {
 		System.out.println("Iniciando coleta url [" + urlDocumento + "]");
 		Documento documento = null;
 

@@ -1,16 +1,18 @@
 package com.maquinadebusca.app.controller;
 
-import com.maquinadebusca.app.mensagem.Mensagem;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import com.maquinadebusca.app.model.service.IndexadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.maquinadebusca.app.mensagem.Mensagem;
+import com.maquinadebusca.app.model.service.IndexadorService;
+
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
 @RequestMapping ("/indexador") // URL: http://localhost:8080/indexador
 public class IndexadorController {
@@ -19,7 +21,7 @@ public class IndexadorController {
   IndexadorService is;
 
   // URL: http://localhost:8080/indexador/indice
-  @PostMapping (value = "/indice", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@PostMapping (value = "/indice", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity criarIndice () {
     boolean confirmacao = is.limpaCriaIndice();
     ResponseEntity resp;

@@ -35,14 +35,30 @@ public class HostController {
 
 	// Request for: http://localhost:8080/host/{id}
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity listarHost(@PathVariable(value = "id") long id) {
-		return new ResponseEntity(hs.getHost(id), HttpStatus.OK);
+	public ResponseEntity listarHost(@PathVariable(value = "id") Long id) {
+		ResponseEntity resposta = null;
+		if (id == null || ((id != null) && (id <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o host  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(hs.getHost(id), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/host/encontrar/{url}
 	@GetMapping(value = "/encontrar/{url}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarHost(@PathVariable(value = "url") String url) {
-		return new ResponseEntity(hs.encontrarHost(url), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (url == null || ((url != null) && (url.equals("")))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o host  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(hs.encontrarHost(url), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/host/{id}
@@ -50,7 +66,7 @@ public class HostController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerHost(@PathVariable(value = "id") Long id) {
 		ResponseEntity resposta = null;
-		if ((id != null) && (id <= 0)) {
+		if (id == null || ((id != null) && (id <= 0L))) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o host  não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);

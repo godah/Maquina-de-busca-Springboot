@@ -45,7 +45,15 @@ public class LinkController {
 	// Request for: http://localhost:8080/link/{id}
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarLink(@PathVariable(value = "id") Long id) {
-		return new ResponseEntity(ls.getLink(id), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (id == null || ((id != null) && (id <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.getLink(id), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/link
@@ -141,7 +149,7 @@ public class LinkController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerLink(@PathVariable(value = "id") Long id) {
 		ResponseEntity resposta = null;
-		if ((id != null) && (id <= 0)) {
+		if (id==null || ((id != null) && (id <= 0L))) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
@@ -161,7 +169,15 @@ public class LinkController {
 	// Request for: http://localhost:8080/link/encontrar/{url}
 	@GetMapping(value = "/encontrar/{url}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarLink(@PathVariable(value = "url") String url) {
-		return new ResponseEntity(ls.encontrarLinkUrl(url), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (url==null || ((url != null) && (url.equals("")))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.encontrarLinkUrl(url), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/link/ordemAlfabetica
@@ -185,21 +201,49 @@ public class LinkController {
 	// Request for: http://localhost:8080/link/pagina/{pageFlag}
 	@GetMapping(value = "/pagina/{pageFlag}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarPagina(@PathVariable(value = "pageFlag") Integer pageFlag) {
-		return new ResponseEntity(ls.buscarPagina(pageFlag), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (pageFlag == null || ((pageFlag != null) && (pageFlag <= 0))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.buscarPagina(pageFlag), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/link/intervalo/{id1}/{id2}
 	@GetMapping(value = "/intervalo/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
 			@PathVariable(value = "id2") Long id2) {
-		return new ResponseEntity(ls.pesquisarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (id1 == null || id2 == null ||
+				((id1 != null) && (id1 <= 0L)) ||
+				((id2 != null) && (id2 <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.pesquisarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/link/intervalo/contar/{id1}/{id2}
 	@GetMapping(value = "/intervalo/contar/{id1}/{id2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity contarLinkPorIntervaloDeId(@PathVariable(value = "id1") Long id1,
 			@PathVariable(value = "id2") Long id2) {
-		return new ResponseEntity(ls.contarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if (id1 == null || id2 == null || 
+				(((id1 != null) && (id1 <= 0L))) ||
+				((id2 != null) && (id2 <= 0L))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.contarLinkPorIntervaloDeIdentificacao(id1, id2), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/coletor/urlsSementes
@@ -231,10 +275,18 @@ public class LinkController {
 		return resposta;
 	}
 
-	// Request for: http://localhost:8080/link/encontrarSemente/{host}
-	@GetMapping(value = "/encontrarSemente/{host}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity encontrarSementePorHost(@PathVariable(value = "host") String host) {
-		return new ResponseEntity(ls.encontrarSementePorHost(host), HttpStatus.OK);
+	// Request for: http://localhost:8080/link/encontrarSemente/{link}
+	@GetMapping(value = "/encontrarSemente/{link}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity encontrarSementePorlink(@PathVariable(value = "link") String link) {
+		ResponseEntity resposta = null;
+		if ((link == null) || (link != null && link.equals(""))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.encontrarSementePorHost(link), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/link/intervalo/datas/{dt1}/{dt2}
@@ -242,16 +294,31 @@ public class LinkController {
 	public ResponseEntity encontrarSementesPorIntervaloDeData(
 			@PathVariable(value = "dt1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt1,
 			@PathVariable(value = "dt2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt2) {
-		return new ResponseEntity(ls.encontrarSementesPorIntervaloDeData(dt1, dt2), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if ((dt1 == null) || (dt1 == null)) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ls.encontrarSementesPorIntervaloDeData(dt1, dt2), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
-	// Request for: http://localhost:8080/link/ultima/coleta/{host}/{data}
+	// Request for: http://localhost:8080/link/ultima/coleta/{link}/{data}
 	@PreAuthorize("hasRole('ADMIN')")
-	@PutMapping(value = "/ultima/coleta/{host}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity atualizarUltimaColeta(@PathVariable(value = "host") String host, @PathVariable(value = "data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
-		int n = ls.atualizarDataUltimaColeta(host, data);
-		ResponseEntity resposta = new ResponseEntity(new Mensagem("sucesso", "número de registros atualizados: " + n),
-				HttpStatus.OK);
+	@PutMapping(value = "/ultima/coleta/{link}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity atualizarUltimaColeta(@PathVariable(value = "link") String link, 
+			@PathVariable(value = "data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
+		ResponseEntity resposta = null;
+		if ((data == null) || link == null || (link != null && link.equals(""))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o link não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			int n = ls.atualizarDataUltimaColeta(link, data);
+			resposta = new ResponseEntity(new Mensagem("sucesso", "número de registros atualizados: " + n), HttpStatus.OK);
+		}
 		return resposta;
 	}
 }

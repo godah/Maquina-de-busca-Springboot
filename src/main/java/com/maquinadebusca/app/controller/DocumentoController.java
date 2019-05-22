@@ -37,7 +37,15 @@ public class DocumentoController {
 	// Request for: http://localhost:8080/documento/{id}
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarDocumento(@PathVariable(value = "id") Long id) {
-		return new ResponseEntity(ds.getDocumento(id), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if ((id != null) && (id <= 0L)) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o documento  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ds.getDocumento(id), HttpStatus.OK);
+		}
+		return resposta;
 	}
 
 	// Request for: http://localhost:8080/documento
@@ -67,7 +75,7 @@ public class DocumentoController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerDoc(@PathVariable(value = "id") Long id) {
 		ResponseEntity resposta = null;
-		if ((id != null) && (id <= 0)) {
+		if ((id != null) && (id <= 0L)) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o documento  não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
@@ -87,7 +95,15 @@ public class DocumentoController {
 	// Request for: http://localhost:8080/documento/encontrar/{url}
 	@GetMapping(value = "/encontrar/{url}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarDocumento(@PathVariable(value = "url") String url) {
-		return new ResponseEntity(ds.encontrarDocumento(url), HttpStatus.OK);
+		ResponseEntity resposta = null;
+		if ((url != null) && (url.contentEquals(""))) {
+			resposta = new ResponseEntity(
+					new Mensagem("erro", "os dados sobre o documento  não foram informados corretamente"),
+					HttpStatus.BAD_REQUEST);
+		} else {
+			resposta = new ResponseEntity(ds.encontrarDocumento(url), HttpStatus.OK);
+		}
+		return resposta;
 	}
 	
 }
