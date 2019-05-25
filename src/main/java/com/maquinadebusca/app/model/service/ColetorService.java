@@ -33,6 +33,9 @@ public class ColetorService {
 	
 	@Autowired
 	private RobotsService robotsService;
+	
+	@Autowired
+	private StopwordsService stopWordsService;
 
 	String urlStringAnterior = null;
 	List<String> sementes = new LinkedList<>();
@@ -75,9 +78,8 @@ public class ColetorService {
 			Elements urls = d.select("a[href]");
 
 			documento = loadOrNewDoc(urlDocumento);
-			
 			documento.setTexto(d.html());
-			documento.setVisao(utilsService.removerPontuacao(d.text()));
+			documento.setVisao(stopWordsService.tratarVisao(d));
 			
 			trataLinksColetados(urlDocumento, documento, urls);
 			documento.setLinks(utilsService.removeElementosRepetidos(documento.getLinks()));
@@ -94,6 +96,8 @@ public class ColetorService {
 		}
 		return documento;
 	}
+
+	
 
 	private Documento loadOrNewDoc(String urlDocumento) {
 		Documento documento;

@@ -10,10 +10,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StopwordsService {
+	@Autowired
+	UtilsService utilsService;
+	
 	List<String> stopWords = new ArrayList<>();
 	private final Log log = LogFactory.getLog(StopwordsService.class);
 	
@@ -44,16 +49,15 @@ public class StopwordsService {
 		if(stopWords.isEmpty()) {
 			getStopWords();
 		}
-		return stopWords.stream().filter(p -> p.equalsIgnoreCase(word)).findFirst().isPresent();
+		return stopWords.stream().filter(p -> p.equalsIgnoreCase(word.trim())).findFirst().isPresent();
 	}
 	
 	public String removerStopWords(String visao) {
 		List<String> words = Arrays.asList(visao.split(" "));
-		List<String> stopWords = getStopWords();
 		List<String> novoVisao = new ArrayList<>();
 
 		for (String word : words) {
-			if(!stopWords.stream().filter(p -> p.equalsIgnoreCase(word.trim())).findFirst().isPresent()) {
+			if(!isStopWord(word)) {
 				novoVisao.add(word.trim());
 			}
 		}
@@ -62,5 +66,12 @@ public class StopwordsService {
 			sb.append(w+" ");
 		}
 		return sb.toString();
+	}
+	
+	public String tratarVisao(Document d) {
+		String visaoTratada = d.text();//Remove tags HTML
+		visaoTratada = utilsService.removerPontuacao(visaoTratada);
+		visaoTratada = this.removerStopWords(visaoTratada);
+		return visaoTratada;
 	}
 }

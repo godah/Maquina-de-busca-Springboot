@@ -1,10 +1,13 @@
 package com.maquinadebusca.app.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Consulta {
+public class Consulta implements Serializable{
 
+	private static final long serialVersionUID = 1913264476479359783L;
+	
 	private String texto;
 	private String visao;
 	private List<TermoConsulta> termosConsulta = new LinkedList<>();
@@ -13,9 +16,9 @@ public class Consulta {
 	public Consulta() {
 	}
 
-	public Consulta(String texto) {
+	public Consulta(String texto, String visao) {
 		this.texto = texto;
-		this.visao = texto;
+		this.visao = visao.trim();
 	}
 
 	public String getTexto() {

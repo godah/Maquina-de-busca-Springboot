@@ -1,16 +1,23 @@
 package com.maquinadebusca.app.model.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.maquinadebusca.app.model.Consulta;
 import com.maquinadebusca.app.model.EntradaRanking;
 import com.maquinadebusca.app.model.IndiceInvertido;
 import com.maquinadebusca.app.model.TermoConsulta;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class ProcessadorConsultaService {
@@ -27,13 +34,17 @@ public class ProcessadorConsultaService {
 	@Autowired
 	IndexadorService is;
 
+	@Autowired
+	private StopwordsService stopwordsService;
+
 	private Map<String, EntradaRanking> mergeListasInvertidas = new Hashtable<>();
 
 	public ProcessadorConsultaService() {
 	}
 
 	public Consulta processarConsulta(String textoConsulta) {
-		Consulta consulta = new Consulta(textoConsulta);
+		Document d = Jsoup.parse(textoConsulta);
+		Consulta consulta = new Consulta(textoConsulta, stopwordsService.tratarVisao(d));
 		this.iniciarTermosConsulta(consulta);
 		this.processarListasInvertidas(consulta);
 		this.computarSimilaridade();
@@ -80,6 +91,7 @@ public class ProcessadorConsultaService {
 		Collection<EntradaRanking> ranking = this.mergeListasInvertidas.values();
 		for (EntradaRanking entradaRanking : ranking) {
 			entradaRanking.computarSimilaridade();
+				
 		}
 	}
 
@@ -89,6 +101,38 @@ public class ProcessadorConsultaService {
 		for (EntradaRanking entradaRanking : ranking) {
 			resp.add(entradaRanking);
 		}
-		return resp;
+		return ordenarRanking(resp);
 	}
+	
+	private List<EntradaRanking> getRankingSemiNormalizado() {
+		List<EntradaRanking> rankings = getRanking();
+		List<EntradaRanking> retorno = new ArrayList<>();
+		for (EntradaRanking ranking : rankings) {
+			EntradaRanking novo = ranking.clone();
+			novo.computarSimilaridadeSemiNormalizada();
+			retorno.add(novo);
+		}
+		return retorno;
+	}
+
+	private List<EntradaRanking> ordenarRanking(List<EntradaRanking> ranking) {
+		return ranking.stream().sorted(Comparator.comparing(EntradaRanking::getSimilaridade).reversed())
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 
+	 * @param tipo 1 = normalizada, 2 = seminormalizada
+	 * @return
+	 */
+	public List<EntradaRanking>  ranking(Integer tipo) {
+		if (tipo == 1)
+			return getRanking();
+		
+		if(tipo == 2 )
+			return getRankingSemiNormalizado();
+		
+		return new ArrayList<>();
+	}
+	
 }
