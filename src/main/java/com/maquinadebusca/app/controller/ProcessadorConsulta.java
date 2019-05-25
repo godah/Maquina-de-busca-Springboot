@@ -57,7 +57,6 @@ public class ProcessadorConsulta {
 	}
 
 	// URL: http://localhost:8080/processador/ranking
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping(value = "/ranking", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity ranking() {
 		List<EntradaRanking> ranking = pcs.ranking(1);

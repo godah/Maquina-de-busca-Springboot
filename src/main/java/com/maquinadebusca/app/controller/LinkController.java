@@ -290,8 +290,8 @@ public class LinkController {
 		return resposta;
 	}
 
-	// Request for: http://localhost:8080/link/intervalo/datas/{dt1}/{dt2}
-	@GetMapping(value = "/intervalo/datas/{dt1}/{dt2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	// Request for: http://localhost:8080/link/sementes/datas/{dt1}/{dt2}
+	@GetMapping(value = "/sementes/datas/{dt1}/{dt2}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity encontrarSementesPorIntervaloDeData(
 			@PathVariable(value = "dt1") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt1,
 			@PathVariable(value = "dt2") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dt2) {

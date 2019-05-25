@@ -5,6 +5,16 @@ Maquina de busca Projeto Final
 HOST: https://maquina-de-busca-springboot.herokuapp.com
 
 
+
+==================================================================
+Login
+==================================================================
+
+#Rota para login
+POST https://maquina-de-busca-springboot.herokuapp.com/login/
+
+
+
 ==================================================================
 Coletor
 ==================================================================
@@ -79,9 +89,32 @@ PUT https://maquina-de-busca-springboot.herokuapp.com/link/ (passando json do li
 #Atualiza ultimaColeta(Data) (apenas ADMIN)
 PUT https://maquina-de-busca-springboot.herokuapp.com/link/atualizaUltimaColetaSementes (passando a data como json no body)
 
-#Inserir Link
+#Inserir Link (apenas ADMIN)
 POST https://maquina-de-busca-springboot.herokuapp.com/link/ (passando json do link no body)
 
+#Listar pagina
+GET https://maquina-de-busca-springboot.herokuapp.com/link/pagina
+
+#Listar pagina por numero
+GET https://maquina-de-busca-springboot.herokuapp.com/link/pagina/{pageFlag}
+
+#Listar Link por intervalo
+GET https://maquina-de-busca-springboot.herokuapp.com/link/intervalo/{id1}/{id2}
+
+#Contar Link por intervalo
+GET https://maquina-de-busca-springboot.herokuapp.com/link/intervalo/contar/{id1}/{id2}
+
+#Inserir url sementes (apenas ADMIN)
+POST https://maquina-de-busca-springboot.herokuapp.com/link/urlsSementes (passando json do link no body)
+
+#Listar Sementes por Host
+GET https://maquina-de-busca-springboot.herokuapp.com/link/encontrarSemente/{link}
+
+#Listar Sementes por intervalo de data
+GET https://maquina-de-busca-springboot.herokuapp.com/link/sementes/datas/{id1}/{id2}
+
+#Atualizar ultima coleta Sementes (apenas ADMIN)
+PUT https://maquina-de-busca-springboot.herokuapp.com/link/ultima/coleta/{link}/{data}
 
 
 ==================================================================
@@ -94,10 +127,10 @@ GET https://maquina-de-busca-springboot.herokuapp.com/usuario/
 GET https://maquina-de-busca-springboot.herokuapp.com/usuario/{id}
 
 #Listar Administradores (apenas ADMIN)
-GET https://maquina-de-busca-springboot.herokuapp.com/usuario/
+GET https://maquina-de-busca-springboot.herokuapp.com/usuario/adminisrador
 
 #Listar Administradores por id (apenas ADMIN)
-GET https://maquina-de-busca-springboot.herokuapp.com/usuario/{id}
+GET https://maquina-de-busca-springboot.herokuapp.com/usuario/administrador/{id}
 
 (obs: Usuario visualiza apenas usuario)
 #Listar Usuarios/Administradores pelo nome
@@ -113,15 +146,43 @@ POST https://maquina-de-busca-springboot.herokuapp.com/usuario/
 #Inserir Administrador (apenas ADMIN)
 POST https://maquina-de-busca-springboot.herokuapp.com/usuario/administrador
 
-#Deletar Usuario (obs: DELETE com rota "/remove" pois deu conflito com o GET)
+obs: DELETE com rota "/remove" pois deu conflito com o GET
+#Deletar Usuario (apenas ADMIN)
 DELETE https://maquina-de-busca-springboot.herokuapp.com/usuario/remove
 
 (obs: DELETE com rota "/remove" pois deu conflito com o GET)
-#Deletar Usuario/Administrador (apenas ADMIN remove Administrador)
+#Deletar Usuario/Administrador (apenas ADMIN)
 DELETE https://maquina-de-busca-springboot.herokuapp.com/usuario/remove (passando json do Usuario no body)
 
 #Deletar Usuario/Administrador (apenas ADMIN remove Administrador)
 DELETE https://maquina-de-busca-springboot.herokuapp.com/usuario/remove/{id}
+
+
+
+==================================================================
+Indexador
+==================================================================
+
+#Cria Indice
+POST https://maquina-de-busca-springboot.herokuapp.com/indexador/indice
+
+#Retorna documentos indexados
+GET https://maquina-de-busca-springboot.herokuapp.com/indexador/documento
+
+
+
+==================================================================
+Indexador
+==================================================================
+ 
+#Processador de consulta
+GET https://maquina-de-busca-springboot.herokuapp.com/processador/consulta/{consultaDoUsuario}
+
+#Retorna o ranking
+GET https://maquina-de-busca-springboot.herokuapp.com/processador/ranking
+
+#Retorna o ranking com Similaridade normalizada = 1, semi-normalizada = 2 (Apenas ADMIN)
+GET https://maquina-de-busca-springboot.herokuapp.com/processador/ranking/{tipo}
 
 
 

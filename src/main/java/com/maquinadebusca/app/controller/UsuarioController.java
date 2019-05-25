@@ -36,9 +36,7 @@ public class UsuarioController {
 		return new ResponseEntity(us.getAdmin(), HttpStatus.OK);
 	}
 
-	//TODO CONFERIR ACESSO DO ADMIN
 	// URL: http://localhost:8080/usuario
-	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarUsuario() {
 		return new ResponseEntity(us.getUser(), HttpStatus.OK);
@@ -60,7 +58,6 @@ public class UsuarioController {
 	}
 
 	// URL: http://localhost:8080/usuario/{id}
-	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity listarUsuario(@PathVariable(value = "id") Long id) {
 		ResponseEntity resposta = null;
@@ -97,7 +94,6 @@ public class UsuarioController {
 	}
 
 	// Request for: http://localhost:8080/usuario
-	@PreAuthorize("hasRole('USER')")
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity inserirUser(@RequestBody @Valid Users users, BindingResult resultado) {
 		ResponseEntity resposta = null;
@@ -119,6 +115,7 @@ public class UsuarioController {
 	}
 
 	// Request for: http://localhost:8080/usuario/remove
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "/remove", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerUser(@RequestBody @Valid Users user, BindingResult resultado) {
 		ResponseEntity resposta = null;
@@ -147,6 +144,7 @@ public class UsuarioController {
 	}
 
 	// Request for: http://localhost:8080/usuario/remove/{id}
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "/remove/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity removerUsuario(@PathVariable(value = "id") Long id) {
 		
