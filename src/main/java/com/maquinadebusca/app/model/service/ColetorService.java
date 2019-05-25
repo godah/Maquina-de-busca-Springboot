@@ -45,17 +45,12 @@ public class ColetorService {
 
 		try {
 			sementes = ls.obterUrlsNaoColetadas();
-			/*
-			sementes.add("https://www.youtube.com/");
-			sementes.add("https://www.facebook.com/");
-			sementes.add("https://www.twitter.com/");
-			*/
 
 			while (!sementes.isEmpty()) {
-				URL url = new URL(sementes.get(0));
+				URL url = new URL(sementes.iterator().next());
 				utilsService.verificaColetaConsecultiva(urlStringAnterior, url);
 				if (robotsService.verificaPermissaoRobots(url)) {
-					documentos.add(this.coletar(sementes.get(0)));
+					documentos.add(this.coletar(sementes.iterator().next()));
 				} else {
 					sementes.remove(0);
 				}

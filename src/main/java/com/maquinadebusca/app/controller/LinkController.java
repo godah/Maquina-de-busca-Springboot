@@ -57,6 +57,7 @@ public class LinkController {
 	}
 
 	// Request for: http://localhost:8080/link
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	public ResponseEntity inserirLink(@RequestBody @Valid Link link, BindingResult resultado) {
