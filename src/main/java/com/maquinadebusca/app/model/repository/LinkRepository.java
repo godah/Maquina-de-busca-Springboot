@@ -24,6 +24,7 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
 	List<Link> findByUltimaColeta(LocalDateTime data);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	Link save(Link link);
 

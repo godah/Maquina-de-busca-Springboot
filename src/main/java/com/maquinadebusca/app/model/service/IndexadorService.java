@@ -13,19 +13,19 @@ import com.maquinadebusca.app.model.TermoDocumento;
 @Service
 public class IndexadorService {
 
-	private Hashtable hashTermos;
+	private Hashtable<String, TermoDocumento> hashTermos;
+
+	@Autowired
+	IndiceInvertidoService is;
 
 	@Autowired
 	DocumentoService ds;
 
 	@Autowired
-	TermoService ts;
-	
-	@Autowired
-	IndiceInvertidoService is;
+	TermoDocumentoService ts;
 
 	List<Documento> documentos;
-	
+
 	public IndexadorService() {
 		this.hashTermos = new Hashtable<>();
 	}
@@ -37,34 +37,36 @@ public class IndexadorService {
 		ts.deleteAllNativeQuery();
 		return criarIndice();
 	}
-	
+
 	public boolean criarIndice() {
 		this.hashTermos = new Hashtable<>();
 		documentos = ds.findAll();
-		//MockupTestes mock = new MockupTestes();
-		//documentos = mock.getDocumentosExercicio1();
+		// MockupTestes mock = new MockupTestes();
+		// documentos = mock.getDocumentosExercicio1();
 		for (Documento documento : documentos) {
 			documento.setFrequenciaMaxima(0L);
 			documento.setSomaQuadradosPesos(0L);
 			documento = ds.save(documento);
 			this.indexar(documento, documentos.size());
 		}
+
 		return true;
 	}
 
 	public void indexar(Documento documento, int N) {
+		int i;
 		String visaoDocumento = documento.getVisao();
 		String[] termos = visaoDocumento.split(" ");
-		for (String termo : termos) {
-			if (!termo.equals("")) {
-				TermoDocumento termoDocumento = this.getTermo(termo);
-				int f = this.frequencia(termoDocumento.getTexto(), termos);
+		for (i = 0; i < termos.length; i++) {
+			if (!termos[i].equals("")) {
+				TermoDocumento termo = this.getTermo(termos[i]);
+				int f = this.frequencia(termo.getTexto(), termos);
 				if (f > documento.getFrequenciaMaxima()) {
 					documento.setFrequenciaMaxima(f);
 				}
-				double peso = calcularPeso(N, termoDocumento.getN(), f);
+				double peso = calcularPeso(N, termo.getN(), f);
 				documento.adicionarPeso(peso);
-				termoDocumento.inserirEntradaIndiceInvertido(documento, f, calculaFrequeciaNormalizada(f, documento.getFrequenciaMaxima()), peso);
+				termo.inserirEntradaIndiceInvertido(documento, f, peso);
 			}
 		}
 	}
@@ -75,28 +77,22 @@ public class IndexadorService {
 		return tf * idf;
 	}
 
-	private double log(double x, int base){
+	private double log(double x, int base) {
 		double a = Math.log(x);
 		double b = Math.log(base);
 		if (a == 0 || b == 0)
 			return 0;
 		return (a / b);
 	}
-	
+
 	private double calcularTf(int frequencia) {
-		return 1 + log(frequencia, 2); 
+		return 1 + log(frequencia, 2);
 	}
-	
+
 	private double calculaIdf(Integer N, Long n) {
-		if(N == 0 || n == 0L)
+		if (N == 0 || n == 0L)
 			return 0;
-		return log((N.doubleValue() / n.doubleValue()),2);
-	}
-	
-	private double calculaFrequeciaNormalizada(int frequencia, double frequenciaMaxima) {
-		if(frequencia == 0 || frequenciaMaxima == 0)
-			return 0;
-		return (frequencia / frequenciaMaxima);
+		return log((N.doubleValue() / n.doubleValue()), 2);
 	}
 
 	public TermoDocumento getTermo(String texto) {
@@ -118,7 +114,7 @@ public class IndexadorService {
 	private Long quantDocPorTermo(String texto) {
 		Long n = 0L;
 		for (Documento documento : documentos) {
-			if(documento.getVisao().contains(texto.toLowerCase()))
+			if (documento.getVisao().contains(texto.toLowerCase()))
 				n++;
 		}
 		return n;
@@ -142,5 +138,5 @@ public class IndexadorService {
 	public List<Documento> getDocumentos() {
 		return documentos;
 	}
-	
+
 }

@@ -75,8 +75,8 @@ public class TermoDocumento implements Serializable {
 		this.indiceInvertido = indiceInvertido;
 	}
 
-  	public void inserirEntradaIndiceInvertido(Documento documento, int frequencia, double frequenciaNormalizada, double peso) {
-		IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia, frequenciaNormalizada, peso); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
+  	public void inserirEntradaIndiceInvertido(Documento documento, int frequencia, double peso) {
+		IndiceInvertido entradaIndiceInvertido = new IndiceInvertido (this, documento, frequencia, peso); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
 		this.indiceInvertido.add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do termo corrente.
 		documento.getIndiceInvertido().add(entradaIndiceInvertido); // Insere a nova entrada no índice invertido do documento que foi informado como parâmetro.
   	}
@@ -101,19 +101,6 @@ public class TermoDocumento implements Serializable {
 			if (entradaIndiceInvertido.getTermo().equals(this)
 					&& entradaIndiceInvertido.getDocumento().equals(documento)) {
 				entradaIndiceInvertido.setFrequencia(frequencia);
-				break;
-			}
-		}
-	}
-
-	public void setFrequenciaNormalizada(Documento documento) {
-		Iterator<IndiceInvertido> iterator = this.indiceInvertido.iterator();
-		while (iterator.hasNext()) {
-			IndiceInvertido entradaIndiceInvertido = iterator.next();
-			if (entradaIndiceInvertido.getTermo().equals(this)
-					&& entradaIndiceInvertido.getDocumento().equals(documento)) {
-				entradaIndiceInvertido.setFrequenciaNormalizada(
-						entradaIndiceInvertido.getFrequencia() / documento.getFrequenciaMaxima());
 				break;
 			}
 		}
@@ -158,5 +145,11 @@ public class TermoDocumento implements Serializable {
 			return false;
 		}
 		return true;
+	}
+	
+	public void inserirEntradaIndiceInvertido (Documento documento, Integer frequencia, Double peso) {
+	    IndiceInvertido entradaIndiceInvertido = new IndiceInvertido(this, documento, frequencia, peso); // Cria uma nova entrada para o índice invertido com o termo corrente, o documento informado como parâmetro e a frequencia do termo no documento.
+	    this.indiceInvertido.add (entradaIndiceInvertido); // Insere a nova entrada no índice invertido do termo corrente.
+	    documento.getIndiceInvertido ().add (entradaIndiceInvertido); // Insere a nova entrada no índice invertido do documento que foi informado como parâmetro.
 	}
 }

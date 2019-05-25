@@ -21,8 +21,6 @@ public class IndiceInvertido implements Serializable {
 
 	private int frequencia;
 
-	private double frequenciaNormalizada;
-
 	private double peso;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -42,13 +40,12 @@ public class IndiceInvertido implements Serializable {
 		this.id = new IdIndiceInvertido(termo.getId(), documento.getId());
 	}
 
-	public IndiceInvertido(TermoDocumento termo, Documento documento, int frequencia, double frequenciaNormalizada, double peso) {
-		this.peso = peso;
-		this.frequenciaNormalizada = frequenciaNormalizada;
+	public IndiceInvertido(TermoDocumento termo, Documento documento, int frequencia, double peso) {
 		this.termo = termo;
 		this.documento = documento;
 		this.frequencia = frequencia;
 		this.id = new IdIndiceInvertido(termo.getId(), documento.getId());
+		this.peso = peso;
 	}
 
 	public IdIndiceInvertido getId() {
@@ -65,14 +62,6 @@ public class IndiceInvertido implements Serializable {
 
 	public void setFrequencia(int frequencia) {
 		this.frequencia = frequencia;
-	}
-
-	public double getFrequenciaNormalizada() {
-		return frequenciaNormalizada;
-	}
-
-	public void setFrequenciaNormalizada(double frequenciaNormalizada) {
-		this.frequenciaNormalizada = frequenciaNormalizada;
 	}
 
 	public double getPeso() {
