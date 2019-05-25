@@ -12,7 +12,7 @@ import com.maquinadebusca.app.model.TermoDocumento;
 
 @Service
 public class IndexadorService {
-
+	
 	private Hashtable<String, TermoDocumento> hashTermos;
 
 	@Autowired
@@ -44,10 +44,14 @@ public class IndexadorService {
 		// MockupTestes mock = new MockupTestes();
 		// documentos = mock.getDocumentosExercicio1();
 		for (Documento documento : documentos) {
-			documento.setFrequenciaMaxima(0L);
-			documento.setSomaQuadradosPesos(0L);
-			documento = ds.save(documento);
-			this.indexar(documento, documentos.size());
+			try {
+				documento.setFrequenciaMaxima(0L);
+				documento.setSomaQuadradosPesos(0L);
+				documento = ds.save(documento);
+				this.indexar(documento, documentos.size());
+			}catch(Exception e ) {
+				System.out.println("Falha ao indexar o documento id:["+documento.getId()+"]");
+			}
 		}
 
 		return true;
