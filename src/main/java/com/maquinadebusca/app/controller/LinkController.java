@@ -276,16 +276,16 @@ public class LinkController {
 		return resposta;
 	}
 
-	// Request for: http://localhost:8080/link/encontrarSemente/{link}
-	@GetMapping(value = "/encontrarSemente/{link}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity encontrarSementePorlink(@PathVariable(value = "link") String link) {
+	// Request for: http://localhost:8080/link/encontrarSemente/{host}
+	@GetMapping(value = "/encontrarSemente/{host}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity encontrarSementePorlink(@PathVariable(value = "host") String host) {
 		ResponseEntity resposta = null;
-		if ((link == null) || (link != null && link.equals(""))) {
+		if ((host == null) || (host != null && host.equals(""))) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o link  não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
 		} else {
-			resposta = new ResponseEntity(ls.encontrarSementePorHost(link), HttpStatus.OK);
+			resposta = new ResponseEntity(ls.encontrarSementePorHost(host), HttpStatus.OK);
 		}
 		return resposta;
 	}
@@ -308,16 +308,16 @@ public class LinkController {
 
 	// Request for: http://localhost:8080/link/ultima/coleta/{link}/{data}
 	@PreAuthorize("hasRole('ADMIN')")
-	@PutMapping(value = "/ultima/coleta/{link}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity atualizarUltimaColeta(@PathVariable(value = "link") String link, 
-			@PathVariable(value = "data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
+	@PutMapping(value = "/ultima/coleta/{host}/{data}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity atualizarUltimaColeta(@PathVariable(value = "host") String host, 
+			@PathVariable(value = "host") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
 		ResponseEntity resposta = null;
-		if ((data == null) || link == null || (link != null && link.equals(""))) {
+		if ((data == null) || host == null || (host != null && host.equals(""))) {
 			resposta = new ResponseEntity(
 					new Mensagem("erro", "os dados sobre o link não foram informados corretamente"),
 					HttpStatus.BAD_REQUEST);
 		} else {
-			int n = ls.atualizarDataUltimaColeta(link, data);
+			int n = ls.atualizarDataUltimaColeta(host, data);
 			resposta = new ResponseEntity(new Mensagem("sucesso", "número de registros atualizados: " + n), HttpStatus.OK);
 		}
 		return resposta;

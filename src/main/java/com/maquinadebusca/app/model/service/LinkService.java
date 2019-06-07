@@ -145,7 +145,7 @@ public class LinkService {
 
 	public List<Link> buscarPagina(Integer pageFlag) {
 		Slice<Link> pagina = null;
-		Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "url"));
+		Pageable pageable = PageRequest.of(0, 15, Sort.by(Sort.Direction.DESC, "url"));
 		while (true) {
 			pagina = lr.getPage(pageable);
 			int numeroDaPagina = pagina.getNumber();

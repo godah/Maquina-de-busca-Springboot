@@ -174,7 +174,7 @@ public class UsuarioController {
 
 	// Request for: http://localhost:8080/usuario/encontrar/{username}
 	@GetMapping(value = "/encontrar/{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity encontrarDocumento(@PathVariable(value = "username") String username) {
+	public ResponseEntity encontrarUsuario(@PathVariable(value = "username") String username) {
 		ResponseEntity resposta = null;
 		if (username == null || ((username != null) && (username.equals("")))) {
 			resposta = new ResponseEntity(
