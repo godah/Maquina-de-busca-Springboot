@@ -12,15 +12,17 @@ function login(){
 		console.log('teste');
 		$.ajax
 	({
-	  type: "POST",
-	  url: "https://maquina-de-busca.herokuapp.com/login/",
+	  type: "GET",
+	  url: "https://maquina-de-busca.herokuapp.com/usuario/",
 	  dataType: 'json',
 	  headers: {
-	    "Authorization": "Basic " + btoa("admin" + ":" + "admin")
+	    "Authorization": "Basic " + btoa("admin" + ":" + "admin"),
+	"Access-Control-Allow-Origin":"*"
 	  },
 	  data: '{ "comment" }',
 	  success: function (){
 	    alert('Thanks for your comment!'); 
+		console.log('ok')
 	  }
 	});
 
