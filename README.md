@@ -4,28 +4,26 @@ Maquina de busca Projeto Final
 
 HOST: https://maquina-de-busca.herokuapp.com
 
-
-
-==================================================================
+===
 Login
-==================================================================
+===
 
 #Rota para login
 POST https://maquina-de-busca.herokuapp.com/login/
 
 
 
-==================================================================
+===
 Coletor
-==================================================================
+===
 #Executar coleta
 GET https://maquina-de-busca.herokuapp.com/coletor/iniciar
 
 
 
-==================================================================
+===
 Documento
-==================================================================
+===
 #Listar Documentos
 GET https://maquina-de-busca.herokuapp.com/documento/
 
@@ -41,9 +39,9 @@ GET https://maquina-de-busca.herokuapp.com/documento/encontrar/{url}
 
 
 
-==================================================================
+===
 Host
-==================================================================
+===
 #Listar Hosts
 GET https://maquina-de-busca.herokuapp.com/host/
 
@@ -61,9 +59,9 @@ DELETE https://maquina-de-busca.herokuapp.com/host/ (passando json do host no bo
 GET https://maquina-de-busca.herokuapp.com/host/encontrar/{url}
 
 
-==================================================================
+===
 Link
-==================================================================
+===
 #Listar Links
 GET https://maquina-de-busca.herokuapp.com/link/
 
@@ -117,9 +115,9 @@ GET https://maquina-de-busca.herokuapp.com/link/sementes/datas/{id1}/{id2}
 PUT https://maquina-de-busca.herokuapp.com/link/ultima/coleta/{link}/{data}
 
 
-==================================================================
+===
 Usuario
-==================================================================
+===
 #Listar Usuarios
 GET https://maquina-de-busca.herokuapp.com/usuario/
 
@@ -159,9 +157,9 @@ DELETE https://maquina-de-busca.herokuapp.com/usuario/remove/{id}
 
 
 
-==================================================================
+===
 Indexador
-==================================================================
+===
 
 #Cria Indice
 POST https://maquina-de-busca.herokuapp.com/indexador/indice
@@ -171,9 +169,9 @@ GET https://maquina-de-busca.herokuapp.com/indexador/documento
 
 
 
-==================================================================
+===
 Indexador
-==================================================================
+===
  
 #Processador de consulta
 GET https://maquina-de-busca.herokuapp.com/processador/consulta/{consultaDoUsuario}
