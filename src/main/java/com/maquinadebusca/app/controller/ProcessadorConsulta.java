@@ -34,8 +34,8 @@ public class ProcessadorConsulta {
 		if (!consulta.getRanking().isEmpty()) {
 			resp = new ResponseEntity(consulta, HttpStatus.OK);
 		} else {
-			resp = new ResponseEntity(new Mensagem("erro", "o índice invertido não pode ser criado"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+			resp = new ResponseEntity(new Mensagem("erro", "Termo não encontrado"),
+					HttpStatus.BAD_REQUEST);
 		}
 		return resp;
 	}

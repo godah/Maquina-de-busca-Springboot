@@ -23,9 +23,9 @@ public interface TermoDocumentoRepository extends JpaRepository<TermoDocumento, 
 	@Query(value = 
 			" select log (2, (select count(distinct d.id) from Documento d)/ t.n) " + 
 			" from TermoDocumento t " + 
-			" where t.texto = to ", 
+			" where t.texto = :termo limit 1", 
 			nativeQuery = true)
-	public double getIdf(@Param("termo") String termo);
+	public String getIdf(@Param("termo") String termo);
 
 	@Modifying(clearAutomatically = true)
 	@Transactional

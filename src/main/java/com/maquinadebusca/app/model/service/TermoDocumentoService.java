@@ -19,7 +19,11 @@ public class TermoDocumentoService {
 	}
 
 	public double getIdf(String termoDocumento) {
-		return tr.getIdf(termoDocumento);
+		try {
+			return Double.parseDouble(tr.getIdf(termoDocumento));
+		}catch (Exception e) {
+			return 0.0;
+		}
 	}
 
 	public void deleteAllNativeQuery() {
