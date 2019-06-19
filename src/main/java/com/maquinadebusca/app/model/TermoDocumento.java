@@ -28,7 +28,7 @@ public class TermoDocumento implements Serializable {
 	private static final long serialVersionUID = -6026930898355882965L;
 
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
+	@GeneratedValue (strategy = GenerationType.AUTO)
 	private Long id;
 
 	@Lob
