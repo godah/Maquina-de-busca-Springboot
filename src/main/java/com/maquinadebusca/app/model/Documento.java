@@ -30,7 +30,7 @@ public class Documento implements Serializable {
 	private static final long serialVersionUID = 4443382295340323876L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Lob

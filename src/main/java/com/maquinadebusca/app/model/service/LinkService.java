@@ -1,5 +1,6 @@
 package com.maquinadebusca.app.model.service;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.maquinadebusca.app.model.Host;
 import com.maquinadebusca.app.model.Link;
 import com.maquinadebusca.app.model.LinkPage;
+import com.maquinadebusca.app.model.repository.HostRepository;
 import com.maquinadebusca.app.model.repository.LinkRepository;
 
 @Service
@@ -21,6 +24,9 @@ public class LinkService {
 
 	@Autowired
 	private LinkRepository lr;
+	
+	@Autowired
+	private HostRepository hr;
 
 	String urlStringAnterior = null;
 	List<String> sementes = new LinkedList<>();
@@ -28,6 +34,15 @@ public class LinkService {
 	public Link salvarLink(Link link) {
 		Link l = null;
 		try {
+			URL url = new URL(link.getUrl());
+			Host host = hr.obterPorUrl(url.getProtocol() + "://" + url.getHost());
+			if(host == null) {
+				host = new Host();
+				host.setUrl(url.getProtocol() + "://" + url.getHost());
+				host.setCount(1L);
+				hr.save(host);
+			}
+			link.setHost(host);
 			l = lr.save(link);
 		} catch (Exception e) {
 			System.out.println("\n>>> Não foi possível salvar o link informado no banco de dados.\n");

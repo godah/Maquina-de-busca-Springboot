@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -58,7 +59,7 @@ public class LinkController {
 
 	// Request for: http://localhost:8080/link
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	public ResponseEntity inserirLink(@RequestBody @Valid Link link, BindingResult resultado) {
 		ResponseEntity resposta = null;
