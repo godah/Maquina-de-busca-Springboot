@@ -64,6 +64,7 @@ public class IndexadorService {
 		for (i = 0; i < termos.length; i++) {
 			if (!termos[i].equals("")) {
 				TermoDocumento termo = this.getTermo(termos[i]);
+				System.out.println("Processando o termo: ["+termo.getTexto()+"] - "+i+" de "+termos.length);
 				int f = this.frequencia(termo.getTexto(), termos);
 				if (f > documento.getFrequenciaMaxima()) {
 					documento.setFrequenciaMaxima(f);
